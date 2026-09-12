@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARENA // 竞技射击</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="hud" class="hidden">
+  <div id="crosshair">
+    <i class="t"></i><i class="b"></i><i class="l"></i><i class="r"></i>
+  </div>
+  <div id="hitmarker"></div>
+  <div id="killFeed"></div>
+
+  <div class="panel panel-bl">
+    <div class="health-wrap">
+      <div class="health-fill" id="healthFill"></div>
+      <span class="health-num" id="healthNum">100</span>
+    </div>
+    <div class="label">生命值</div>
+  </div>
+
+  <div class="panel panel-br">
+    <div class="weapon-name" id="weaponName">AK-47</div>
+    <div class="attach-badges" id="attachBadges"></div>
+    <div class="ammo-num">
+      <span id="ammoNum">30</span><span class="ammo-max" id="ammoMax"> / 30</span>
+    </div>
+    <div class="label" id="reloadHint">弹药</div>
+  </div>
+
+  <div class="panel panel-tr">
+    <div class="stat"><span>金币</span><b id="coinsHud">500</b></div>
+    <div class="stat"><span>击杀</span><b id="kills">0</b></div>
+    <div class="stat"><span>死亡</span><b id="deaths">0</b></div>
+  </div>
+
+  <div id="adsHint" class="hidden">右键 开镜</div>
+</div>
+
+<div id="overlay">
+  <div class="lobby-box">
+    <h1 id="overlayTitle">ARENA</h1>
+    <p class="sub" id="overlaySub">竞技场射击 · 选择地图与武器</p>
+
+    <div class="name-bar">
+      <label for="playerNameInput">昵称</label>
+      <input id="playerNameInput" type="text" maxlength="10" placeholder="输入昵称" value="玩家001">
+    </div>
+
+    <div class="coin-bar">
+      <span class="coin-icon">💰</span>
+      <span class="coin-label">金币</span>
+      <b id="coinsDisplay">500</b>
+      <span class="coin-hint">击杀 +75 · 解锁永久保存</span>
+    </div>
+
+    <div class="section">
+      <div class="section-title">地图</div>
+      <div class="map-grid" id="mapGrid"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">武器</div>
+      <div class="class-tabs" id="classTabs"></div>
+      <div class="weapon-grid" id="weaponGrid"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">改装配件</div>
+      <div id="attachmentsPanel"></div>
+    </div>
+
+    <button id="startBtn">进入战场</button>
+
+    <p class="hint">
+      <kbd>WASD</kbd> 移动 ·
+      <kbd>Shift</kbd> 冲刺 ·
+      <kbd>Ctrl</kbd> 蹲下 ·
+      <kbd>Space</kbd> 跳跃 ·
+      <kbd>左键</kbd> 射击 ·
+      <kbd>右键</kbd> 开镜 ·
+      <kbd>滚轮</kbd>/<kbd>Q</kbd> 切枪 ·
+      <kbd>R</kbd> 换弹 ·
+      <kbd>Esc</kbd> 大厅
+    </p>
+  </div>
+</div>
+
+<div id="damageVignette"></div>
+
+<div id="bootError" style="display:none;position:fixed;inset:0;z-index:999;background:#0a0d13;color:#e8eef7;padding:60px;font-family:monospace;overflow:auto">
+  <h1 style="color:#ff4d5e;font-size:22px;margin-bottom:16px">游戏启动失败</h1>
+  <p style="margin-bottom:20px;color:#9fb0c7">
+    如果你是双击 index.html 打开的，浏览器会拒绝加载模块。
+    必须用本地服务器：python -m http.server 8080 或 VS Code 的 Live Server。
+  </p>
+  <pre id="bootErrorMsg" style="background:#131926;padding:20px;border-left:3px solid #ff4d5e;white-space:pre-wrap;word-break:break-all;font-size:13px;line-height:1.7"></pre>
+  <p style="margin-top:24px;color:#6d7d94;font-size:13px">
+    当前地址：<span id="bootProtocol"></span>
+  </p>
+</div>
+
+<script>
+window.__bootFail = function (msg) {
+  var panel = document.getElementById('bootError');
+  var pre = document.getElementById('bootErrorMsg');
+  var loc = document.getElementById('bootProtocol');
+  if (loc) loc.textContent = location.href;
+  if (pre) pre.textContent = msg;
+  if (panel) panel.style.display = 'block';
+  console.error(msg);
+};
+
+if (location.protocol === 'file:') {
+  window.__bootFail(
+    'file:// 协议禁止加载 ES Module。\n\n' +
+    '解决办法：\n' +
+    '1. VS Code 装 Live Server，右键 index.html 选 Open with Live Server\n' +
+    '2. 终端执行 python -m http.server 8080，访问 http://localhost:8080'
+  );
+}
+</script>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js"}}
+</script>
+
+<script type="module" src="./main.js"></script>
+
+</body>
+</html>
